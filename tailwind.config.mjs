@@ -8,8 +8,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        wallet_red_100: "#DC2828",
+        wallet_red_75:"#4F1313BF",
+        wallet_red_50:"#4F131380",
+        wallet_red_20: "#DC282833",
+        wallet_red_10:"#DC28281A",
+        wallet_black:"#220901",
       },
     },
   },
