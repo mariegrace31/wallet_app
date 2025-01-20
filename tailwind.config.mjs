@@ -14,6 +14,7 @@ export default {
         wallet_red_20: "#DC282833",
         wallet_red_10:"#DC28281A",
         wallet_black:"#220901",
+        wallet_white:"#f6e8ea"
       },
     },
   },

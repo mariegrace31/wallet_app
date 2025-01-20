@@ -1,9 +1,13 @@
 import Image from "next/image";
+import Sidebar from "./components/Sidebar";
 
 export default function Home() {
   return (
-    <div >
-      <p>hello there</p>
+    <div className="flex" >
+     <Sidebar />
+     <div>
+      <p>hello</p>
+     </div>
     </div>
   );
 }
