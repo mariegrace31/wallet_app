@@ -61,7 +61,7 @@ This project helps you to manage your money so that you can minimize the expense
 <!-- LIVE DEMO -->
 ## <b>Live Demo 🚀</b><a name="live-demo"></a>
 
-If you want to check the live demo of this project, please click 😊 [here]([https://](https://wallet-8b75q5gkd-marie-graces-projects.vercel.app/)).
+If you want to check the live demo of this project, please click 😊 [here]([https://](https://wallet-app-sigma-two.vercel.app/)).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
