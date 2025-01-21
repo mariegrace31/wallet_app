@@ -1,42 +1,197 @@
-"use client"
-import { useState } from 'react';
+"use client";
 
-export default function TransactionForm({ onAddTransaction }) {
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [type, setType] = useState('expense');
-  const [account, setAccount] = useState('Bank');
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import Sidebar from "../components/Sidebar";
+import { FaPlus } from "react-icons/fa6";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newTransaction = { description, amount, type, account, date: new Date().toISOString() };
+export default function TransactionsPage() {
+  const { user } = useAuth();
 
-    const response = await fetch('/api/transactions', {
-      method: 'POST',
-      body: JSON.stringify(newTransaction),
-      headers: { 'Content-Type': 'application/json' },
+  if (!user) {
+    return (
+      <div className="flex">
+        <Sidebar />
+        <p className="text-[20px] text-center flex justify-center mx-auto mt-64">
+          Please log in to see your transactions.
+        </p>
+      </div>
+    );
+  }
+
+  const [transactions, setTransactions] = useState([]);
+  const [newTransaction, setNewTransaction] = useState({
+    amount: "",
+    category: "",
+    subcategory: "",
+  });
+  const [isAddingTransaction, setIsAddingTransaction] = useState(false);
+
+  const handleAddTransaction = () => {
+    const newTransactionEntry = {
+      id: Date.now(),
+      ...newTransaction,
+      date: new Date().toISOString(),
+    };
+
+    setTransactions((prevTransactions) => [
+      ...prevTransactions,
+      newTransactionEntry,
+    ]);
+
+    addCategoryToCategoriesPage(newTransaction.category);
+
+    setNewTransaction({
+      amount: "",
+      category: "",
+      subcategory: "",
     });
 
-    if (response.ok) {
-      const addedTransaction = await response.json();
-      onAddTransaction(addedTransaction);
-    }
+    setIsAddingTransaction(false);
   };
 
+  const handleDeleteTransaction = (id) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.filter((transaction) => transaction.id !== id)
+    );
+  };
+
+  const addCategoryToCategoriesPage = (category) => {
+    console.log(`Category "${category}" added`);
+  };
+
+  const closeModal = () => {
+    setIsAddingTransaction(false);
+  };
+
+  const totalIncome = transactions
+    .filter((transaction) => transaction.category === "income")
+    .reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
+
+  const totalExpense = transactions
+    .filter((transaction) => transaction.category === "expense")
+    .reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required />
-      <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" required />
-      <select value={type} onChange={(e) => setType(e.target.value)}>
-        <option value="expense">Expense</option>
-        <option value="income">Income</option>
-      </select>
-      <select value={account} onChange={(e) => setAccount(e.target.value)}>
-        <option value="Bank">Bank</option>
-        <option value="Mobile Money">Mobile Money</option>
-        <option value="Cash">Cash</option>
-      </select>
-      <button type="submit">Add Transaction</button>
-    </form>
+    <div className="flex relative">
+      <Sidebar />
+      <div className="p-8 mx-auto w-full pl-80">
+        <h2 className="text-2xl text-wallet_red_100 font-semibold">Transactions</h2>
+
+        {transactions.length === 0 ? (
+          <div className="flex justify-between items-center mt-4">
+            <p className="text-[20px] text-wallet_black font-extralight">You don't have any transactions</p>
+            <button
+              onClick={() => setIsAddingTransaction(true)}
+              className="bg-wallet_red_100 text-white rounded-lg p-2 flex items-center gap-1"
+            >
+            <FaPlus /> Add New Transaction
+            </button>
+          </div>
+        ) : (
+          <div className="mt-4">
+            <div className="flex justify-between">
+              <h3 className="text-lg text-gray-400">All Transactions</h3>
+              <button
+                onClick={() => setIsAddingTransaction(true)}
+                className="bg-wallet_red_100 text-[15px] text-white rounded-lg p-2 flex gap-1 items-center"
+              >
+              <FaPlus />  Add New Transaction
+              </button>
+            </div>
+
+            <table className="min-w-full mt-4 table-auto">
+              <thead>
+                <tr>
+                  <th className="border px-4 py-2 text-left">#</th>
+                  <th className="border px-4 py-2 text-left">Amount</th>
+                  <th className="border px-4 py-2 text-left">Category</th>
+                  <th className="border px-4 py-2 text-left">Subcategory</th>
+                  <th className="border px-4 py-2 text-left">Date</th>
+                  <th className="border px-4 py-2 text-left">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((transaction, index) => (
+                  <tr key={transaction.id}>
+                    <td className="border px-4 py-2">{index + 1}</td>
+                    <td className="border px-4 py-2">{transaction.amount}</td>
+                    <td className="border px-4 py-2">{transaction.category}</td>
+                    <td className="border px-4 py-2">{transaction.subcategory}</td>
+                    <td className="border px-4 py-2">
+                      {new Date(transaction.date).toLocaleDateString()}
+                    </td>
+                    <td className="border px-4 py-2">
+                      <button
+                        onClick={() => handleDeleteTransaction(transaction.id)}
+                        className="bg-wallet_red_100 text-[12px] text-white rounded-lg px-2 py-1"
+                      >
+                        Delete this transaction
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            
+            <div className="flex justify-center gap-6 mt-4">
+              <p className=" bg-green-100 p-2 rounded-lg">Total Income: ${totalIncome.toFixed(2)}</p>
+              <p className=" bg-wallet_red_10 p-2 rounded-lg">Total Expense: ${totalExpense.toFixed(2)}</p>
+            </div>
+          </div>
+        )}
+
+        {isAddingTransaction && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg w-[400px]">
+              <h3 className="text-xl mb-2">Add New Transaction</h3>
+              
+              <input
+                type="number"
+                placeholder="Amount"
+                value={newTransaction.amount}
+                onChange={(e) =>
+                  setNewTransaction({ ...newTransaction, amount: e.target.value })
+                }
+                className="p-2 border mb-2 w-full"
+              />
+              <select
+                value={newTransaction.category}
+                onChange={(e) =>
+                  setNewTransaction({ ...newTransaction, category: e.target.value })
+                }
+                className="p-2 border mb-2 w-full"
+              >
+                <option value="">Select Category</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Subcategory"
+                value={newTransaction.subcategory}
+                onChange={(e) =>
+                  setNewTransaction({ ...newTransaction, subcategory: e.target.value })
+                }
+                className="p-2 border mb-4 w-full"
+              />
+              <button
+                onClick={handleAddTransaction}
+                className="bg-green-500 text-white p-2 w-full mb-2"
+              >
+                Add Transaction
+              </button>
+              <button
+                onClick={closeModal}
+                className="bg-red-500 text-white p-2 w-full"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
