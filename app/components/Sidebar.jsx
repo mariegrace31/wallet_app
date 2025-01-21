@@ -51,11 +51,6 @@ export default function Sidebar() {
               <MdCategory /> Categories
             </Link>
           </li>
-          <li className="p-4 hover:bg-wallet_red_75 group">
-            <Link href="/budgets" className="text-wallet_black group-hover:text-wallet_white flex gap-1 items-center">
-              <RiMoneyDollarCircleFill /> Budgets
-            </Link>
-          </li>
         </ul>
       </nav>
 

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "../components/Sidebar";
@@ -28,6 +28,7 @@ export default function TransactionsPage() {
   });
   const [isAddingTransaction, setIsAddingTransaction] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -70,19 +71,16 @@ export default function TransactionsPage() {
   };
 
   const handleDeleteTransaction = (id) => {
-    setTransactions((prevTransactions) =>
-      prevTransactions.filter((transaction) => transaction.id !== id)
-    );
+    const updatedTransactions = transactions.filter((transaction) => transaction.id !== id);
+    setTransactions(updatedTransactions);
     saveTransactions(updatedTransactions);
   };
 
-  const closeModal = () => {
-    setIsAddingTransaction(false);
-  };
+  const closeModal = () => setIsAddingTransaction(false);
 
-  const closeLimitModal = () => {
-    setShowLimitModal(false);
-  };
+  const closeLimitModal = () => setShowLimitModal(false);
+
+  const closeSummary = () => setSelectedTransaction(null);
 
   const totalIncome = transactions
     .filter((transaction) => transaction.category === "income")
@@ -135,7 +133,11 @@ export default function TransactionsPage() {
               </thead>
               <tbody>
                 {transactions.map((transaction, index) => (
-                  <tr key={transaction.id}>
+                  <tr
+                    key={transaction.id}
+                    onClick={() => setSelectedTransaction(transaction)}
+                    className="cursor-pointer hover:bg-gray-100"
+                  >
                     <td className="border px-4 py-2">{index + 1}</td>
                     <td className="border px-4 py-2">{transaction.amount}</td>
                     <td className="border px-4 py-2">{transaction.category}</td>
@@ -145,7 +147,10 @@ export default function TransactionsPage() {
                     </td>
                     <td className="border px-4 py-2">
                       <button
-                        onClick={() => handleDeleteTransaction(transaction.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteTransaction(transaction.id);
+                        }}
                         className="bg-wallet_red_100 text-[12px] text-white rounded-lg px-2 py-1"
                       >
                         Delete this transaction
@@ -163,6 +168,24 @@ export default function TransactionsPage() {
               <p className="bg-wallet_red_10 p-2 rounded-lg">
                 Total Expense: ${totalExpense.toFixed(2)}
               </p>
+            </div>
+          </div>
+        )}
+
+        {selectedTransaction && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg w-[400px]">
+              <h3 className="text-xl mb-2 text-wallet_red_100">Transaction Summary</h3>
+              <p><strong>Amount:</strong> ${selectedTransaction.amount}</p>
+              <p><strong>Category:</strong> {selectedTransaction.category}</p>
+              <p><strong>Subcategory:</strong> {selectedTransaction.subcategory}</p>
+              <p><strong>Date:</strong> {new Date(selectedTransaction.date).toLocaleDateString()}</p>
+              <button
+                onClick={closeSummary}
+                className="bg-red-500 text-white p-2 w-full mt-4"
+              >
+                Close
+              </button>
             </div>
           </div>
         )}
