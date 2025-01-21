@@ -11,7 +11,7 @@ export default function TransactionsPage() {
     return (
       <div className="flex">
         <Sidebar />
-        <p className="text-[20px] text-center flex justify-center mx-auto mt-64">
+        <p className="text-[15px] lg:text-[20px] text-center flex justify-center mx-auto mt-64">
           Please log in to see your transactions.
         </p>
       </div>
@@ -93,42 +93,42 @@ export default function TransactionsPage() {
   return (
     <div className="flex relative">
       <Sidebar />
-      <div className="p-8 mx-auto w-full pl-80">
-        <h2 className="text-2xl text-wallet_red_100 font-semibold">Transactions</h2>
+      <div className="p-8 pt-20 lg:pt-8 mx-auto w-full pl-4 lg:pl-80">
+        <h2 className="text-xl lg:text-2xl text-wallet_red_100 font-semibold">Transactions</h2>
 
         {transactions.length === 0 ? (
           <div className="flex justify-between items-center mt-4">
-            <p className="text-[20px] text-wallet_black font-extralight">
+            <p className="text-[12px] lg:text-[20px] text-wallet_black font-extralight">
               You don't have any transactions
             </p>
             <button
               onClick={() => setIsAddingTransaction(true)}
-              className="bg-wallet_red_100 text-white rounded-lg p-2 flex items-center gap-1"
+              className="bg-wallet_red_100 text-white rounded-lg p-2 text-[13px] lg:text-[16px] flex items-center gap-1"
             >
               <FaPlus /> Add New Transaction
             </button>
           </div>
         ) : (
           <div className="mt-4">
-            <div className="flex justify-between">
-              <h3 className="text-lg text-gray-400">All Transactions</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-[11px] lg:text-lg text-gray-400">All Transactions</h3>
               <button
                 onClick={() => setIsAddingTransaction(true)}
-                className="bg-wallet_red_100 text-[15px] text-white rounded-lg p-2 flex gap-1 items-center"
+                className="bg-wallet_red_100 text-[11px] text-white rounded-lg p-2 flex gap-1 items-center"
               >
                 <FaPlus /> Add New Transaction
               </button>
             </div>
 
-            <table className="min-w-full mt-4 table-auto">
+            <table className="min-w-full mt-4 table-auto overflow-x-auto">
               <thead>
                 <tr>
-                  <th className="border px-4 py-2 text-left">#</th>
-                  <th className="border px-4 py-2 text-left">Amount</th>
-                  <th className="border px-4 py-2 text-left">Category</th>
-                  <th className="border px-4 py-2 text-left">Subcategory</th>
-                  <th className="border px-4 py-2 text-left">Date</th>
-                  <th className="border px-4 py-2 text-left">Action</th>
+                  <th className="border px-1 lg:px-4 py-1 lg:py-2 text-left text-[10px] lg:text-[17px]">#</th>
+                  <th className="border px-1 lg:px-4 py-1 lg:py-2 text-left text-[10px] lg:text-[17px]">Amount</th>
+                  <th className="border px-1 lg:px-4 py-1 lg:py-2 text-left text-[10px] lg:text-[17px]">Category</th>
+                  <th className="border px-1 lg:px-4 py-1 lg:py-2 text-left text-[10px] lg:text-[17px]">Subcategory</th>
+                  <th className="border px-1 lg:px-4 py-1 lg:py-2 text-left text-[10px] lg:text-[17px]">Date</th>
+                  <th className="border px-1 lg:px-4 py-1 lg:py-2 text-left text-[10px] lg:text-[17px]">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -136,24 +136,24 @@ export default function TransactionsPage() {
                   <tr
                     key={transaction.id}
                     onClick={() => setSelectedTransaction(transaction)}
-                    className="cursor-pointer hover:bg-gray-100"
+                    className="cursor-pointer hover:bg-wallet_red_10"
                   >
-                    <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{transaction.amount}</td>
-                    <td className="border px-4 py-2">{transaction.category}</td>
-                    <td className="border px-4 py-2">{transaction.subcategory}</td>
-                    <td className="border px-4 py-2">
+                    <td className="border px-1 lg:px-4 py-1 lg:py-2 text-[10px] lg:text-[17px]">{index + 1}</td>
+                    <td className="border px-1 lg:px-4 py-1 lg:py-2 text-[10px] lg:text-[17px]">{transaction.amount}</td>
+                    <td className="border px-1 lg:px-4 py-1 lg:py-2 text-[10px] lg:text-[17px]">{transaction.category}</td>
+                    <td className="border px-1 lg:px-4 py-1 lg:py-2 text-[10px] lg:text-[17px]">{transaction.subcategory}</td>
+                    <td className="border px-1 lg:px-4 py-1 lg:py-2 text-[10px] lg:text-[17px]">
                       {new Date(transaction.date).toLocaleDateString()}
                     </td>
-                    <td className="border px-4 py-2">
+                    <td className="border px-1 lg:px-4 py-1 lg:py-2 text-[10px] lg:text-[17px]">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteTransaction(transaction.id);
                         }}
-                        className="bg-wallet_red_100 text-[12px] text-white rounded-lg px-2 py-1"
+                        className="bg-wallet_red_100 text-[10px] lg:text-[12px] text-white rounded-lg px-2 py-1"
                       >
-                        Delete this transaction
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -161,11 +161,11 @@ export default function TransactionsPage() {
               </tbody>
             </table>
 
-            <div className="flex justify-center gap-6 mt-4">
-              <p className="bg-green-100 p-2 rounded-lg">
+            <div className="flex justify-center gap-4 lg:gap-6 mt-4">
+              <p className="bg-green-100 text-[12px] lg:text-[17px] p-2 rounded-lg">
                 Total Income: ${totalIncome.toFixed(2)}
               </p>
-              <p className="bg-wallet_red_10 p-2 rounded-lg">
+              <p className="bg-wallet_red_10 text-[12px] lg:text-[17px] p-2 rounded-lg">
                 Total Expense: ${totalExpense.toFixed(2)}
               </p>
             </div>
@@ -174,8 +174,8 @@ export default function TransactionsPage() {
 
         {selectedTransaction && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-lg w-[400px]">
-              <h3 className="text-xl mb-2 text-wallet_red_100">Transaction Summary</h3>
+            <div className="bg-white m-3 lg:m-0 p-6 rounded-lg w-[400px]">
+              <h3 className="text-md lg:text-xl mb-2 text-wallet_red_100">Transaction Summary</h3>
               <p><strong>Amount:</strong> ${selectedTransaction.amount}</p>
               <p><strong>Category:</strong> {selectedTransaction.category}</p>
               <p><strong>Subcategory:</strong> {selectedTransaction.subcategory}</p>
@@ -192,8 +192,8 @@ export default function TransactionsPage() {
 
         {isAddingTransaction && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-lg w-[400px]">
-              <h3 className="text-xl mb-2">Add New Transaction</h3>
+            <div className="bg-white p-6 m-3 lg:m-0 rounded-lg w-[400px]">
+              <h3 className=" text-md lg:text-xl mb-2">Add New Transaction</h3>
 
               <input
                 type="number"
