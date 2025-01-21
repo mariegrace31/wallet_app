@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "../components/Sidebar";
 import { FaPlus } from "react-icons/fa6";
@@ -29,6 +29,17 @@ export default function TransactionsPage() {
   const [isAddingTransaction, setIsAddingTransaction] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      const savedTransactions = JSON.parse(localStorage.getItem(user.email)) || [];
+      setTransactions(savedTransactions);
+    }
+  }, [user]);
+
+  const saveTransactions = (updatedTransactions) => {
+    localStorage.setItem(user.email, JSON.stringify(updatedTransactions));
+  };
+
   const handleAddTransaction = () => {
     const newTransactionEntry = {
       id: Date.now(),
@@ -46,6 +57,7 @@ export default function TransactionsPage() {
       setShowLimitModal(true);
     } else {
       setTransactions(updatedTransactions);
+      saveTransactions(updatedTransactions);
     }
 
     setNewTransaction({
@@ -61,6 +73,7 @@ export default function TransactionsPage() {
     setTransactions((prevTransactions) =>
       prevTransactions.filter((transaction) => transaction.id !== id)
     );
+    saveTransactions(updatedTransactions);
   };
 
   const closeModal = () => {
