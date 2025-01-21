@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "../components/Sidebar";
@@ -19,6 +18,8 @@ export default function TransactionsPage() {
     );
   }
 
+  const EXPENSE_LIMIT = 2000;
+
   const [transactions, setTransactions] = useState([]);
   const [newTransaction, setNewTransaction] = useState({
     amount: "",
@@ -26,6 +27,7 @@ export default function TransactionsPage() {
     subcategory: "",
   });
   const [isAddingTransaction, setIsAddingTransaction] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   const handleAddTransaction = () => {
     const newTransactionEntry = {
@@ -34,12 +36,17 @@ export default function TransactionsPage() {
       date: new Date().toISOString(),
     };
 
-    setTransactions((prevTransactions) => [
-      ...prevTransactions,
-      newTransactionEntry,
-    ]);
+    const updatedTransactions = [...transactions, newTransactionEntry];
 
-    addCategoryToCategoriesPage(newTransaction.category);
+    const totalExpense = updatedTransactions
+      .filter((transaction) => transaction.category === "expense")
+      .reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
+
+    if (totalExpense > EXPENSE_LIMIT) {
+      setShowLimitModal(true);
+    } else {
+      setTransactions(updatedTransactions);
+    }
 
     setNewTransaction({
       amount: "",
@@ -56,12 +63,12 @@ export default function TransactionsPage() {
     );
   };
 
-  const addCategoryToCategoriesPage = (category) => {
-    console.log(`Category "${category}" added`);
-  };
-
   const closeModal = () => {
     setIsAddingTransaction(false);
+  };
+
+  const closeLimitModal = () => {
+    setShowLimitModal(false);
   };
 
   const totalIncome = transactions
@@ -80,12 +87,14 @@ export default function TransactionsPage() {
 
         {transactions.length === 0 ? (
           <div className="flex justify-between items-center mt-4">
-            <p className="text-[20px] text-wallet_black font-extralight">You don't have any transactions</p>
+            <p className="text-[20px] text-wallet_black font-extralight">
+              You don't have any transactions
+            </p>
             <button
               onClick={() => setIsAddingTransaction(true)}
               className="bg-wallet_red_100 text-white rounded-lg p-2 flex items-center gap-1"
             >
-            <FaPlus /> Add New Transaction
+              <FaPlus /> Add New Transaction
             </button>
           </div>
         ) : (
@@ -96,7 +105,7 @@ export default function TransactionsPage() {
                 onClick={() => setIsAddingTransaction(true)}
                 className="bg-wallet_red_100 text-[15px] text-white rounded-lg p-2 flex gap-1 items-center"
               >
-              <FaPlus />  Add New Transaction
+                <FaPlus /> Add New Transaction
               </button>
             </div>
 
@@ -134,10 +143,13 @@ export default function TransactionsPage() {
               </tbody>
             </table>
 
-            
             <div className="flex justify-center gap-6 mt-4">
-              <p className=" bg-green-100 p-2 rounded-lg">Total Income: ${totalIncome.toFixed(2)}</p>
-              <p className=" bg-wallet_red_10 p-2 rounded-lg">Total Expense: ${totalExpense.toFixed(2)}</p>
+              <p className="bg-green-100 p-2 rounded-lg">
+                Total Income: ${totalIncome.toFixed(2)}
+              </p>
+              <p className="bg-wallet_red_10 p-2 rounded-lg">
+                Total Expense: ${totalExpense.toFixed(2)}
+              </p>
             </div>
           </div>
         )}
@@ -146,7 +158,7 @@ export default function TransactionsPage() {
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg w-[400px]">
               <h3 className="text-xl mb-2">Add New Transaction</h3>
-              
+
               <input
                 type="number"
                 placeholder="Amount"
@@ -185,6 +197,21 @@ export default function TransactionsPage() {
               <button
                 onClick={closeModal}
                 className="bg-red-500 text-white p-2 w-full"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showLimitModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg w-[400px]">
+              <h3 className="text-xl mb-2 text-red-500">Expense Limit Exceeded</h3>
+              <p>You shouldn't exceed $2000 of expenses!</p>
+              <button
+                onClick={closeLimitModal}
+                className="bg-red-500 text-white p-2 w-full mt-4"
               >
                 Close
               </button>
