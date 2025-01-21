@@ -50,7 +50,7 @@ This project helps you to manage your money so that you can minimize the expense
 - See transactions reports
 
 **Future features**
-- ntegrate a database
+- Integrate a database
 - Update the Logo
 - Update the landing page
 
@@ -61,7 +61,7 @@ This project helps you to manage your money so that you can minimize the expense
 <!-- LIVE DEMO -->
 ## <b>Live Demo 🚀</b><a name="live-demo"></a>
 
-If you want to check the live demo of this project, please click 😊 [here](https://).
+If you want to check the live demo of this project, please click 😊 [here]([https://](https://wallet-8b75q5gkd-marie-graces-projects.vercel.app/)).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
